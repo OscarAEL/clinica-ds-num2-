@@ -7,7 +7,6 @@ use App\Http\Controllers\MedicoPanelController;
 use App\Http\Controllers\HorarioMedicoController;
 use App\Http\Controllers\EspecialidadController;
 use App\Http\Controllers\UsuarioController;
-use App\Http\Controllers\MedicoCitaController;
 use App\Http\Controllers\PacienteCitaController;
 use App\Http\Controllers\PacienteMedicoController;
 use App\Http\Controllers\PacienteEspecialidadController;

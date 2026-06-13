@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Especialidad;
-use Illuminate\Http\Request;
 
 class PacienteEspecialidadController extends Controller
 {

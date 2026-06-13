@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Horario;
-use Illuminate\Http\Request;
-
 class PacienteCitaController extends Controller
 {
     public function index()
