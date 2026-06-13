@@ -3,62 +3,39 @@
 namespace App\Http\Controllers;
 
 use App\Models\Medico;
+use App\Models\Horario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class MedicoPanelController extends Controller
 {
-    private function validarMedico()
+    private function obtenerMedico()
     {
-        if (!Auth::check() || Auth::user()->tipo_usuario !== 'medico') {
-            abort(403, 'No tienes permiso para acceder a esta sección.');
-        }
-    }
-
-    private function medicoActual()
-    {
-        $this->validarMedico();
-
-        $user = Auth::user();
-
-        return Medico::firstOrCreate(
-            ['user_id' => $user->id],
-            [
-                'nombres' => $user->name ?? 'Médico',
-                'apellidos' => '',
-                'dni' => null,
-                'telefono' => null,
-                'especialidad' => 'No asignada',
-                'cmp' => null,
-                'estado' => 'activo',
-            ]
-        );
+        // El administrador ya creó al médico en la BD, así que solo lo buscamos
+        return Medico::where('user_id', Auth::id())->firstOrFail();
     }
 
     public function home()
     {
-        $this->validarMedico();
-
         return view('medico.home');
     }
 
     public function perfil()
     {
-        $medico = $this->medicoActual();
-
+        $medico = $this->obtenerMedico();
         return view('medico.perfil', compact('medico'));
     }
 
     public function actualizarPerfil(Request $request)
     {
-        $medico = $this->medicoActual();
+        $medico = $this->obtenerMedico();
 
+        // Ya no validamos la especialidad porque el médico no puede cambiársela él mismo
         $request->validate([
             'nombres' => 'required|string|max:100',
             'apellidos' => 'nullable|string|max:100',
             'dni' => 'nullable|string|max:20',
             'telefono' => 'nullable|string|max:20',
-            'especialidad' => 'required|string|max:100',
             'cmp' => 'nullable|string|max:50',
         ]);
 
@@ -67,7 +44,6 @@ class MedicoPanelController extends Controller
             'apellidos' => $request->apellidos,
             'dni' => $request->dni,
             'telefono' => $request->telefono,
-            'especialidad' => $request->especialidad,
             'cmp' => $request->cmp,
         ]);
 
@@ -82,8 +58,14 @@ class MedicoPanelController extends Controller
 
     public function citas()
     {
-        $medico = $this->medicoActual();
+        $medico = $this->obtenerMedico();
 
-        return view('medico.citas.index', compact('medico'));
+        // Jalamos SOLO los horarios que ya fueron reservados por pacientes
+        $citas = Horario::where('medico_id', $medico->id)
+            ->where('estado', 'no_disponible')
+            ->latest()
+            ->get();
+
+        return view('medico.citas.index', compact('citas'));
     }
 }

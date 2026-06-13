@@ -35,52 +35,29 @@ class UsuarioController extends Controller
         return view('admin.usuarios.edit', compact('usuario'));
     }
 
-    public function update(Request $request, User $usuario)
+    public function update(Request $request, $id)
     {
-        $this->validarAdministrador();
-
+        // 1. Validamos ÚNICAMENTE el campo que sí estamos enviando (el select del perfil)
         $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => [
-                'required',
-                'email',
-                Rule::unique('users', 'email')->ignore($usuario->id),
-            ],
-            'password' => 'nullable|min:6',
-            'tipo_usuario' => 'required|in:administrador,medico,paciente',
+            'tipo_usuario' => 'required|in:paciente,medico,administrador',
         ]);
 
-        $datos = [
-            'name' => $request->name,
-            'email' => $request->email,
+        // 2. Buscamos el usuario en la base de datos
+        $usuario = \App\Models\User::findOrFail($id);
+
+        // 3. Actualizamos solo el rol/perfil, respetando el nombre y correo intactos
+        $usuario->update([
             'tipo_usuario' => $request->tipo_usuario,
-        ];
+        ]);
 
-        if ($request->filled('password')) {
-            $datos['password'] = Hash::make($request->password);
-        }
-
-        $usuario->update($datos);
-
+        // 4. Redirigimos con mensaje de éxito
         return redirect()
             ->route('admin.usuarios.index')
-            ->with('success', 'Usuario actualizado correctamente.');
+            ->with('success', 'El perfil del usuario ha sido actualizado correctamente.');
     }
 
     public function destroy(User $usuario)
     {
-        $this->validarAdministrador();
-
-        if ($usuario->id === Auth::id()) {
-            return redirect()
-                ->route('admin.usuarios.index')
-                ->with('error', 'No puedes eliminar tu propia cuenta de administrador.');
-        }
-
-        $usuario->delete();
-
-        return redirect()
-            ->route('admin.usuarios.index')
-            ->with('success', 'Usuario eliminado correctamente.');
+        //
     }
 }

@@ -158,16 +158,6 @@ class MedicoCitaController extends Controller
 
     public function destroy($id)
     {
-        $this->validarMedico();
-
-        $disponibilidades = array_filter($this->obtenerDisponibilidades(), function ($item) use ($id) {
-            return !((int) $item['id'] === (int) $id && $item['correo_medico'] === Auth::user()->email);
-        });
-
-        $this->guardarDisponibilidades($disponibilidades);
-
-        return redirect()
-            ->route('medico.citas.index')
-            ->with('success', 'Horario eliminado correctamente.');
+        //
     }
 }

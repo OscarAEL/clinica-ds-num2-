@@ -12,7 +12,7 @@ class Horario extends Model
         'hora_inicio',
         'hora_fin',
         'consultorio',
-        'estado',
+        'estado'
     ];
 
     public function medico()

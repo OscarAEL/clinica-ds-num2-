@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <title>Panel Administrador - Clínica D.S.</title>
@@ -33,7 +34,7 @@
 
                 {{-- MÉDICOS --}}
                 <a href="{{ route('admin.medicos.index') }}"
-                   class="block rounded-2xl bg-slate-50 p-5 ring-1 ring-slate-200 transition hover:-translate-y-1 hover:bg-cyan-50 hover:shadow-md">
+                    class="block rounded-2xl bg-slate-50 p-5 ring-1 ring-slate-200 transition hover:-translate-y-1 hover:bg-cyan-50 hover:shadow-md">
                     <div class="mb-3 text-3xl">👨‍⚕️</div>
 
                     <h2 class="font-bold text-slate-950">
@@ -47,7 +48,7 @@
 
                 {{-- ESPECIALIDADES --}}
                 <a href="{{ route('admin.especialidades.index') }}"
-                   class="block rounded-2xl bg-slate-50 p-5 ring-1 ring-slate-200 transition hover:-translate-y-1 hover:bg-cyan-50 hover:shadow-md">
+                    class="block rounded-2xl bg-slate-50 p-5 ring-1 ring-slate-200 transition hover:-translate-y-1 hover:bg-cyan-50 hover:shadow-md">
                     <div class="mb-3 text-3xl">🩺</div>
 
                     <h2 class="font-bold text-slate-950">
@@ -59,9 +60,24 @@
                     </p>
                 </a>
 
+
+                {{-- GESTIÓN DE HORARIOS --}}
+                <a href="{{ route('medico.horarios.index') }}"
+                    class="block rounded-2xl bg-slate-50 p-5 ring-1 ring-slate-200 transition hover:-translate-y-1 hover:bg-cyan-50 hover:shadow-md">
+                    <div class="mb-3 text-3xl">⏱️</div>
+
+                    <h2 class="font-bold text-slate-950">
+                        Gestión de horarios
+                    </h2>
+                    <p class="mt-2 text-sm leading-6 text-slate-600">
+                        Supervisa y administra los turnos de atención de los médicos de la clínica.
+                    </p>
+                </a>
+
+
                 {{-- GESTIÓN DE USUARIOS --}}
                 <a href="{{ route('admin.usuarios.index') }}"
-                   class="block rounded-2xl bg-slate-50 p-5 ring-1 ring-slate-200 transition hover:-translate-y-1 hover:bg-cyan-50 hover:shadow-md">
+                    class="block rounded-2xl bg-slate-50 p-5 ring-1 ring-slate-200 transition hover:-translate-y-1 hover:bg-cyan-50 hover:shadow-md">
                     <div class="mb-3 text-3xl">👥</div>
 
                     <h2 class="font-bold text-slate-950">
@@ -87,4 +103,5 @@
     </main>
 
 </body>
+
 </html>

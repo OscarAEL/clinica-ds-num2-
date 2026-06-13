@@ -4,26 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Models\Medico;
 use App\Models\User;
+use App\Models\Especialidad;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 
 class MedicoController extends Controller
 {
-    private function asegurarAdministrador()
-    {
-        if (!Auth::check() || Auth::user()->tipo_usuario !== 'administrador') {
-            abort(403, 'No tienes permiso para acceder a esta sección.');
-        }
-    }
-
     public function index()
     {
-        $this->asegurarAdministrador();
-
-        $medicos = Medico::with('user')
+        // Cargamos al médico con su usuario Y también con su especialidad asociada
+        $medicos = Medico::with(['user', 'especialidad'])
             ->latest()
             ->paginate(8);
 
@@ -32,15 +24,14 @@ class MedicoController extends Controller
 
     public function create()
     {
-        $this->asegurarAdministrador();
+        // Jalamos solo las especialidades activas para mostrarlas en el formulario
+        $especialidades = Especialidad::where('estado', 'activo')->get();
 
-        return view('admin.medicos.create');
+        return view('admin.medicos.create', compact('especialidades'));
     }
 
     public function store(Request $request)
     {
-        $this->asegurarAdministrador();
-
         $request->validate([
             'nombres' => 'required|string|max:100',
             'apellidos' => 'required|string|max:100',
@@ -48,7 +39,7 @@ class MedicoController extends Controller
             'password' => 'required|min:6',
             'dni' => 'nullable|string|max:20',
             'telefono' => 'nullable|string|max:20',
-            'especialidad' => 'required|string|max:100',
+            'especialidad_id' => 'required|exists:especialidades,id',
             'cmp' => 'nullable|string|max:50',
             'estado' => 'required|in:activo,inactivo',
         ]);
@@ -67,7 +58,7 @@ class MedicoController extends Controller
                 'apellidos' => $request->apellidos,
                 'dni' => $request->dni,
                 'telefono' => $request->telefono,
-                'especialidad' => $request->especialidad,
+                'especialidad_id' => $request->especialidad_id,
                 'cmp' => $request->cmp,
                 'estado' => $request->estado,
             ]);
@@ -80,17 +71,16 @@ class MedicoController extends Controller
 
     public function edit(Medico $medico)
     {
-        $this->asegurarAdministrador();
-
         $medico->load('user');
 
-        return view('admin.medicos.edit', compact('medico'));
+        // Jalamos todas las especialidades activas para el formulario de edición
+        $especialidades = Especialidad::where('estado', 'activo')->get();
+
+        return view('admin.medicos.edit', compact('medico', 'especialidades'));
     }
 
     public function update(Request $request, Medico $medico)
     {
-        $this->asegurarAdministrador();
-
         $request->validate([
             'nombres' => 'required|string|max:100',
             'apellidos' => 'required|string|max:100',
@@ -102,7 +92,7 @@ class MedicoController extends Controller
             'password' => 'nullable|min:6',
             'dni' => 'nullable|string|max:20',
             'telefono' => 'nullable|string|max:20',
-            'especialidad' => 'required|string|max:100',
+            'especialidad_id' => 'required|exists:especialidades,id',
             'cmp' => 'nullable|string|max:50',
             'estado' => 'required|in:activo,inactivo',
         ]);
@@ -126,7 +116,7 @@ class MedicoController extends Controller
                 'apellidos' => $request->apellidos,
                 'dni' => $request->dni,
                 'telefono' => $request->telefono,
-                'especialidad' => $request->especialidad,
+                'especialidad_id' => $request->especialidad_id,
                 'cmp' => $request->cmp,
                 'estado' => $request->estado,
             ]);
@@ -139,20 +129,6 @@ class MedicoController extends Controller
 
     public function destroy(Medico $medico)
     {
-        $this->asegurarAdministrador();
-
-        DB::transaction(function () use ($medico) {
-            $user = $medico->user;
-
-            $medico->delete();
-
-            if ($user) {
-                $user->delete();
-            }
-        });
-
-        return redirect()
-            ->route('admin.medicos.index')
-            ->with('success', 'Médico eliminado correctamente.');
+        // 
     }
 }

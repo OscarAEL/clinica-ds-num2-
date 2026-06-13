@@ -2,48 +2,43 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
+use App\Models\Horario;
+use Illuminate\Http\Request;
 
 class PacienteCitaController extends Controller
 {
-    private string $clave = 'disponibilidades_clinica';
-
-    private function validarPaciente()
-    {
-        if (!Auth::check() || Auth::user()->tipo_usuario !== 'paciente') {
-            abort(403, 'No tienes permiso para acceder a esta sección.');
-        }
-    }
-
     public function index()
     {
-        $this->validarPaciente();
-
-        $disponibilidades = collect(Cache::get($this->clave, []))
-            ->map(fn ($item) => (object) $item);
+        // Traemos de la BD real SOLO los horarios que los médicos marcaron como "disponible".
+        // Cargamos las relaciones para saber qué médico y especialidad es.
+        $disponibilidades = Horario::with(['medico.user', 'medico.especialidad'])
+            ->where('estado', 'disponible')
+            ->latest()
+            ->get();
 
         return view('paciente.citas.index', compact('disponibilidades'));
     }
 
     public function reservar($id)
     {
-        $this->validarPaciente();
+        // Buscamos el horario real en SQLite
+        $horario = Horario::findOrFail($id);
 
-        $disponibilidades = Cache::get($this->clave, []);
+        // Verificamos que siga disponible por seguridad
+        if ($horario->estado === 'disponible') {
 
-        foreach ($disponibilidades as $index => $item) {
-            if ((int) $item['id'] === (int) $id && $item['estado'] === 'disponible') {
-                $disponibilidades[$index]['estado'] = 'reservado';
-                $disponibilidades[$index]['paciente'] = Auth::user()->name;
-                $disponibilidades[$index]['correo_paciente'] = Auth::user()->email;
-            }
+            // Actualizamos la base de datos para que ya nadie más pueda reservarlo
+            $horario->update([
+                'estado' => 'no_disponible'
+            ]);
+
+            return redirect()
+                ->route('paciente.citas.index')
+                ->with('success', '¡Cita reservada correctamente! El horario ha sido asignado.');
         }
-
-        Cache::put($this->clave, $disponibilidades, now()->addDays(7));
 
         return redirect()
             ->route('paciente.citas.index')
-            ->with('success', 'Cita reservada correctamente.');
+            ->withErrors('Lo sentimos, este horario ya fue reservado por otro paciente.');
     }
 }

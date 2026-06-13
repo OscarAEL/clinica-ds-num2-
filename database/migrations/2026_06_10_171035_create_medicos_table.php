@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('apellidos');
             $table->string('dni')->nullable();
             $table->string('telefono')->nullable();
-            $table->string('especialidad');
+            $table->foreignId('especialidad_id')->constrained('especialidades')->cascadeOnDelete();
             $table->string('cmp')->nullable();
             $table->string('estado')->default('activo');
 

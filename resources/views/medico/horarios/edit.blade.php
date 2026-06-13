@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <title>Editar Horario - Clínica D.S.</title>
@@ -22,11 +23,11 @@
             </div>
 
             @if ($errors->any())
-                <div class="mb-6 rounded-2xl bg-red-50 p-4 text-sm text-red-700 ring-1 ring-red-100">
-                    @foreach ($errors->all() as $error)
-                        <p>• {{ $error }}</p>
-                    @endforeach
-                </div>
+            <div class="mb-6 rounded-2xl bg-red-50 p-4 text-sm text-red-700 ring-1 ring-red-100">
+                @foreach ($errors->all() as $error)
+                <p>• {{ $error }}</p>
+                @endforeach
+            </div>
             @endif
 
             <form action="{{ route('medico.horarios.update', $horario->id) }}" method="POST" class="grid gap-4 md:grid-cols-2">
@@ -36,64 +37,60 @@
                 <div class="md:col-span-2">
                     <label class="mb-1 block text-sm font-semibold text-slate-700">Día de atención</label>
                     <select name="dia_semana"
-                            class="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none focus:border-cyan-600 focus:ring-4 focus:ring-cyan-100">
+                        class="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none focus:border-cyan-600 focus:ring-4 focus:ring-cyan-100">
                         @foreach (['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'] as $dia)
-                            <option value="{{ $dia }}" {{ old('dia_semana', $horario->dia_semana) === $dia ? 'selected' : '' }}>
-                                {{ $dia }}
-                            </option>
+                        <option value="{{ $dia }}" {{ old('dia_semana', $horario->dia_semana) == $dia ? 'selected' : '' }}>{{ $dia }}</option>
                         @endforeach
                     </select>
+                    @error('dia_semana') <span class="mt-1 block text-sm font-semibold text-red-600">{{ $message }}</span> @enderror
                 </div>
 
                 <div>
                     <label class="mb-1 block text-sm font-semibold text-slate-700">Hora inicio</label>
                     <input type="time" name="hora_inicio" value="{{ old('hora_inicio', substr($horario->hora_inicio, 0, 5)) }}" required
-                           class="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none focus:border-cyan-600 focus:ring-4 focus:ring-cyan-100">
+                        class="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none focus:border-cyan-600 focus:ring-4 focus:ring-cyan-100">
+                    @error('hora_inicio') <span class="mt-1 block text-sm font-semibold text-red-600">{{ $message }}</span> @enderror
                 </div>
 
                 <div>
                     <label class="mb-1 block text-sm font-semibold text-slate-700">Hora fin</label>
                     <input type="time" name="hora_fin" value="{{ old('hora_fin', substr($horario->hora_fin, 0, 5)) }}" required
-                           class="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none focus:border-cyan-600 focus:ring-4 focus:ring-cyan-100">
+                        class="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none focus:border-cyan-600 focus:ring-4 focus:ring-cyan-100">
+                    @error('hora_fin') <span class="mt-1 block text-sm font-semibold text-red-600">{{ $message }}</span> @enderror
                 </div>
 
                 <div>
                     <label class="mb-1 block text-sm font-semibold text-slate-700">Consultorio</label>
                     <input type="text" name="consultorio" value="{{ old('consultorio', $horario->consultorio) }}"
-                           class="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none focus:border-cyan-600 focus:ring-4 focus:ring-cyan-100">
+                        class="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none focus:border-cyan-600 focus:ring-4 focus:ring-cyan-100"
+                        placeholder="Ejemplo: Consultorio 201">
+                    @error('consultorio') <span class="mt-1 block text-sm font-semibold text-red-600">{{ $message }}</span> @enderror
                 </div>
 
                 <div>
                     <label class="mb-1 block text-sm font-semibold text-slate-700">Estado</label>
                     <select name="estado"
-                            class="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none focus:border-cyan-600 focus:ring-4 focus:ring-cyan-100">
-                        <option value="disponible" {{ old('estado', $horario->estado) === 'disponible' ? 'selected' : '' }}>
-                            Disponible
-                        </option>
-                        <option value="no_disponible" {{ old('estado', $horario->estado) === 'no_disponible' ? 'selected' : '' }}>
-                            No disponible
-                        </option>
+                        class="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none focus:border-cyan-600 focus:ring-4 focus:ring-cyan-100">
+                        <option value="disponible" {{ old('estado', $horario->estado) == 'disponible' ? 'selected' : '' }}>Disponible</option>
+                        <option value="no_disponible" {{ old('estado', $horario->estado) == 'no_disponible' ? 'selected' : '' }}>No disponible</option>
                     </select>
+                    @error('estado') <span class="mt-1 block text-sm font-semibold text-red-600">{{ $message }}</span> @enderror
                 </div>
 
                 <div class="mt-4 flex flex-col gap-3 sm:flex-row md:col-span-2">
                     <button class="rounded-2xl bg-cyan-600 px-6 py-3 font-semibold text-white hover:bg-cyan-700">
                         Actualizar horario
                     </button>
-
                     <a href="{{ route('medico.horarios.index') }}"
-                       class="rounded-2xl bg-slate-100 px-6 py-3 text-center font-semibold text-slate-800 hover:bg-slate-200">
+                        class="rounded-2xl bg-slate-100 px-6 py-3 text-center font-semibold text-slate-800 hover:bg-slate-200">
                         Cancelar
                     </a>
                 </div>
             </form>
 
-            <div class="mt-6 rounded-2xl bg-cyan-50 p-4 text-sm text-cyan-700 ring-1 ring-cyan-100">
-                Esta pantalla funciona como prueba visual. Los cambios se guardan temporalmente en la sesión.
-            </div>
-
         </section>
     </main>
 
 </body>
+
 </html>

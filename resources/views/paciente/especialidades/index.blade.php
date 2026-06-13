@@ -53,10 +53,6 @@
                             {{ $especialidad->descripcion }}
                         </p>
 
-                        <p>
-                            <span class="font-bold text-slate-900">Área de atención:</span>
-                            {{ $especialidad->area }}
-                        </p>
                     </div>
                 </article>
             @empty

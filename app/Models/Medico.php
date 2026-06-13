@@ -12,7 +12,7 @@ class Medico extends Model
         'apellidos',
         'dni',
         'telefono',
-        'especialidad',
+        'especialidad_id',
         'cmp',
         'estado',
     ];
@@ -20,6 +20,11 @@ class Medico extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function especialidad()
+    {
+        return $this->belongsTo(Especialidad::class);
     }
 
     public function horarios()
