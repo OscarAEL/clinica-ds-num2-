@@ -15,7 +15,7 @@
             <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                     <p class="text-sm font-semibold text-cyan-700">Panel médico</p>
-                    <h1 class="mt-1 text-3xl font-bold text-slate-950">Mis horarios</h1>
+                    <h1 class="mt-1 text-3xl font-bold text-slate-950">Gestión de horarios</h1>
                     <p class="mt-2 text-slate-600">
                         Gestiona tus horarios de atención disponibles.
                     </p>

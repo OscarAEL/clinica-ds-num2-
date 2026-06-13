@@ -17,9 +17,9 @@ class DatabaseSeeder extends Seeder
     {
         \App\Models\User::create([
             'name' => 'Administrador Clínica',
-            'email' => 'admin@clinicads.com', // Coloca aquí el correo que usabas
+            'email' => 'admin@clinicads.com', 
             'password' => \Illuminate\Support\Facades\Hash::make('admin123'), // Tu contraseña
-            'tipo_usuario' => 'administrador', // Vital para que pase tus validaciones de rol
+            'tipo_usuario' => 'administrador', // validaciones de rol
         ]);
     }
 }
