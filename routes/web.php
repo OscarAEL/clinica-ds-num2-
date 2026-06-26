@@ -10,9 +10,6 @@ use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\PacienteCitaController;
 use App\Http\Controllers\PacienteMedicoController;
 use App\Http\Controllers\PacienteEspecialidadController;
-use App\Models\Medico;
-use App\Models\Especialidad;
-use App\Models\Cita;
 
 
 // 1. RUTAS PÚBLICAS Y DE AUTENTICACIÓN
@@ -55,7 +52,6 @@ Route::middleware(['auth', 'role:administrador'])->group(function () {
     Route::get('/admin/usuarios', [UsuarioController::class, 'index'])->name('admin.usuarios.index');
     Route::get('/admin/usuarios/{usuario}/edit', [UsuarioController::class, 'edit'])->name('admin.usuarios.edit');
     Route::put('/admin/usuarios/{usuario}', [UsuarioController::class, 'update'])->name('admin.usuarios.update');
-    Route::delete('/admin/usuarios/{usuario}', [UsuarioController::class, 'destroy'])->name('admin.usuarios.destroy');
 });
 
 
@@ -89,7 +85,6 @@ Route::middleware(['auth', 'role:medico'])->group(function () {
     Route::post('/medico/horarios', [HorarioMedicoController::class, 'store'])->name('medico.horarios.store');
     Route::get('/medico/horarios/{horario}/edit', [HorarioMedicoController::class, 'edit'])->name('medico.horarios.edit');
     Route::put('/medico/horarios/{horario}', [HorarioMedicoController::class, 'update'])->name('medico.horarios.update');
-    Route::delete('/medico/horarios/{horario}', [HorarioMedicoController::class, 'destroy'])->name('medico.horarios.destroy');
 });
 
 
@@ -112,7 +107,6 @@ Route::middleware(['auth', 'role:paciente'])->group(function () {
     Route::get('/paciente/citas', [PacienteCitaController::class, 'index'])->name('paciente.citas.index');
     Route::post('/paciente/citas', [PacienteCitaController::class, 'store'])->name('paciente.citas.store');
     Route::get('/paciente/mis-citas', [PacienteCitaController::class, 'misCitas'])->name('paciente.mis-citas.index');
-    Route::post('/paciente/citas/{disponibilidad}/reservar', [PacienteCitaController::class, 'reservar'])->name('paciente.citas.reservar');
 
     Route::get('/paciente/medicos', [PacienteMedicoController::class, 'index'])->name('paciente.medicos.index');
     Route::get('/paciente/especialidades', [PacienteEspecialidadController::class, 'index'])->name('paciente.especialidades.index');

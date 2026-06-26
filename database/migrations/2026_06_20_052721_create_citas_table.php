@@ -21,14 +21,15 @@ return new class extends Migration
                 ->constrained('horarios')
                 ->cascadeOnDelete();
 
-            // Ciclo de vida de la solicitud
-            $table->string('estado')->default('pendiente');
-            // valores esperados: pendiente | aprobada | rechazada | cancelada
+            // Estado actual de la cita dentro del flujo del sistema
+            $table->string('estado')->default('reservada');
+            // valores esperados: reservada | cancelada | reprogramada
 
-            // Texto libre del paciente al solicitar (Paso 5 del wizard)
+            // Texto libre del paciente al solicitar la cita
             $table->text('motivo_consulta')->nullable();
 
-            // Texto del médico si rechaza (se usará en Fase 4)
+            // Campo antiguo conservado para compatibilidad con migraciones/datos previos.
+            // El flujo actual usa motivo_cancelacion, agregado en la migración update_citas_table.
             $table->text('motivo_rechazo')->nullable();
 
             $table->timestamps();

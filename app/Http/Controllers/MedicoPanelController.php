@@ -115,8 +115,22 @@ class MedicoPanelController extends Controller
         ]);
 
         $medico = $this->obtenerMedico();
+
         if ($cita->horario->medico_id !== $medico->id) {
             abort(403);
+        }
+
+        $existeCita = Cita::where('horario_id', $cita->horario_id)
+            ->whereDate('fecha', $request->nueva_fecha)
+            ->whereIn('estado', ['reservada', 'reprogramada'])
+            ->where('id', '!=', $cita->id)
+            ->exists();
+
+        if ($existeCita) {
+            return redirect()
+                ->route('medico.citas.index')
+                ->withInput()
+                ->with('error', 'Ya existe una cita reservada para este horario en la fecha seleccionada.');
         }
 
         $cita->update([

@@ -54,8 +54,4 @@ class UsuarioController extends Controller
             ->with('success', 'El perfil del usuario ha sido actualizado correctamente.');
     }
 
-    public function destroy(User $usuario)
-    {
-        //
-    }
 }

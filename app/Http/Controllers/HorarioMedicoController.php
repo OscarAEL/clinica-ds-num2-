@@ -40,8 +40,8 @@ class HorarioMedicoController extends Controller
 
         $request->validate([
             'dia_semana' => 'required|string|max:30',
-            'hora_inicio' => 'required',
-            'hora_fin' => 'required',
+            'hora_inicio' => 'required|date_format:H:i',
+            'hora_fin' => 'required|date_format:H:i|after:hora_inicio',
             'consultorio' => 'nullable|string|max:100',
             'estado' => 'required|in:disponible,no_disponible',
         ]);
@@ -76,8 +76,8 @@ class HorarioMedicoController extends Controller
 
         $request->validate([
             'dia_semana' => 'required|string|max:30',
-            'hora_inicio' => 'required',
-            'hora_fin' => 'required',
+            'hora_inicio' => 'required|date_format:H:i',
+            'hora_fin'    => 'required|date_format:H:i|after:hora_inicio',
             'consultorio' => 'nullable|string|max:100',
             'estado' => 'required|in:disponible,no_disponible',
         ]);
@@ -95,10 +95,5 @@ class HorarioMedicoController extends Controller
         return redirect()
             ->route('medico.horarios.index')
             ->with('success', 'Horario actualizado correctamente.');
-    }
-
-    public function destroy($id)
-    {
-        // 
     }
 }

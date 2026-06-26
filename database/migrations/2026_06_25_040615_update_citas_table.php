@@ -13,7 +13,7 @@ return new class extends Migration
             // Fecha concreta de la cita (crítica: horarios son bloques semanales recurrentes)
             $table->date('fecha')->after('horario_id');
 
-            // Para cancelaciones y reprogramaciones del médico
+            // Motivo registrado por el médico cuando cancela o reprograma una cita
             $table->text('motivo_cancelacion')->nullable()->after('motivo_consulta');
         });
     }

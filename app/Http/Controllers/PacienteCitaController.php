@@ -45,8 +45,8 @@ class PacienteCitaController extends Controller
 
         // Verificar que ese horario no esté ya reservado para esa fecha exacta
         $existente = Cita::where('horario_id', $request->horario_id)
-            ->where('fecha', $request->fecha)
-            ->where('estado', 'reservada')
+            ->whereDate('fecha', $request->fecha)
+            ->whereIn('estado', ['reservada', 'reprogramada'])
             ->first();
 
         if ($existente) {
@@ -68,26 +68,14 @@ class PacienteCitaController extends Controller
             ->with('success', '¡Tu cita ha sido reservada correctamente!');
     }
 
-    // Método legado — se mantiene para no romper la ruta existente
-    public function reservar($id)
-    {
-        $horario = Horario::findOrFail($id);
-
-        if ($horario->estado === 'disponible') {
-            $horario->update(['estado' => 'no_disponible']);
-            return redirect()->route('paciente.citas.index')
-                ->with('success', '¡Cita reservada correctamente!');
-        }
-
-        return redirect()->route('paciente.citas.index')
-            ->withErrors('Lo sentimos, este horario ya fue reservado.');
-    }
-
     public function misCitas()
     {
-        $citas = Cita::with(['horario.medico.especialidad'])
+        $citas = Cita::with([
+            'horario.medico.especialidad',
+        ])
             ->where('paciente_id', Auth::id())
-            ->orderBy('fecha', 'desc')
+            ->orderByDesc('fecha')
+            ->orderByDesc('created_at')
             ->get();
 
         return view('paciente.mis-citas.index', compact('citas'));
