@@ -1,107 +1,89 @@
-<!DOCTYPE html>
-<html lang="es">
+@extends('layouts.dashboard')
 
-<head>
-    <meta charset="UTF-8">
-    <title>Panel Administrador - Clínica D.S.</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
+@section('titulo', 'Dashboard')
+@section('header', 'Panel de Control')
 
-<body class="bg-slate-50 text-slate-900">
+@section('content')
+<div class="space-y-6">
 
-    <main class="mx-auto max-w-5xl px-4 py-8">
-        <section class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-
-            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <div>
-                    <h1 class="text-3xl font-bold text-slate-950">
-                        Panel de administrador
-                    </h1>
-
-                    <p class="mt-3 text-slate-600">
-                        Bienvenido administrador. Desde aquí podrás gestionar médicos,
-                        especialidades, usuarios y supervisar la información general de la clínica.
-                    </p>
-                </div>
-
-                <div class="rounded-2xl bg-cyan-50 px-5 py-4 text-cyan-700 ring-1 ring-cyan-100">
-                    <p class="text-sm font-semibold">Usuario administrador</p>
-                    <p class="text-sm">{{ Auth::user()->email }}</p>
-                </div>
+    <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-cyan-600 via-cyan-500 to-teal-500 p-8 shadow-sm">
+        <div class="absolute -top-12 -right-12 w-56 h-56 bg-white/10 rounded-full blur-3xl"></div>
+        <div class="absolute -bottom-16 -left-10 w-48 h-48 bg-white/10 rounded-full blur-3xl"></div>
+        <div class="relative flex items-center justify-between">
+            <div>
+                <p class="text-cyan-50/80 text-sm font-medium tracking-wide uppercase">Panel administrador</p>
+                <h1 class="text-3xl font-bold text-white mt-1">¡Bienvenido, Administrador!</h1>
+                <p class="text-cyan-50/90 mt-2 max-w-lg">Monitorea y gestiona el personal médico, especialidades y usuarios de Clínica DS.</p>
             </div>
-
-            <div class="mt-8 grid gap-4 md:grid-cols-3">
-
-                {{-- MÉDICOS --}}
-                <a href="{{ route('admin.medicos.index') }}"
-                    class="block rounded-2xl bg-slate-50 p-5 ring-1 ring-slate-200 transition hover:-translate-y-1 hover:bg-cyan-50 hover:shadow-md">
-                    <div class="mb-3 text-3xl">👨‍⚕️</div>
-
-                    <h2 class="font-bold text-slate-950">
-                        Médicos
-                    </h2>
-
-                    <p class="mt-2 text-sm leading-6 text-slate-600">
-                        Registrar, editar y eliminar médicos.
-                    </p>
-                </a>
-
-                {{-- ESPECIALIDADES --}}
-                <a href="{{ route('admin.especialidades.index') }}"
-                    class="block rounded-2xl bg-slate-50 p-5 ring-1 ring-slate-200 transition hover:-translate-y-1 hover:bg-cyan-50 hover:shadow-md">
-                    <div class="mb-3 text-3xl">🩺</div>
-
-                    <h2 class="font-bold text-slate-950">
-                        Especialidades
-                    </h2>
-
-                    <p class="mt-2 text-sm leading-6 text-slate-600">
-                        Registrar, editar y eliminar especialidades.
-                    </p>
-                </a>
-
-
-                {{-- GESTIÓN DE HORARIOS --}}
-                <a href="{{ route('medico.horarios.index') }}"
-                    class="block rounded-2xl bg-slate-50 p-5 ring-1 ring-slate-200 transition hover:-translate-y-1 hover:bg-cyan-50 hover:shadow-md">
-                    <div class="mb-3 text-3xl">⏱️</div>
-
-                    <h2 class="font-bold text-slate-950">
-                        Gestión de horarios
-                    </h2>
-                    <p class="mt-2 text-sm leading-6 text-slate-600">
-                        Supervisa y administra los turnos de atención de los médicos de la clínica.
-                    </p>
-                </a>
-
-
-                {{-- GESTIÓN DE USUARIOS --}}
-                <a href="{{ route('admin.usuarios.index') }}"
-                    class="block rounded-2xl bg-slate-50 p-5 ring-1 ring-slate-200 transition hover:-translate-y-1 hover:bg-cyan-50 hover:shadow-md">
-                    <div class="mb-3 text-3xl">👥</div>
-
-                    <h2 class="font-bold text-slate-950">
-                        Gestión de usuarios
-                    </h2>
-
-                    <p class="mt-2 text-sm leading-6 text-slate-600">
-                        Ver administradores, médicos y pacientes registrados.
-                    </p>
-                </a>
-
+            <div class="hidden md:flex w-20 h-20 rounded-2xl bg-white/15 backdrop-blur-sm items-center justify-center text-4xl text-white flex-shrink-0">
+                <i class="fa-solid fa-shield-halved"></i>
             </div>
+        </div>
+    </div>
 
-            <form action="{{ route('logout') }}" method="POST" class="mt-8">
-                @csrf
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
 
-                <button class="rounded-2xl bg-red-600 px-5 py-3 font-semibold text-white hover:bg-red-700">
-                    Cerrar sesión
-                </button>
-            </form>
+        <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm">
+            <div class="w-11 h-11 rounded-xl bg-cyan-50 text-cyan-600 flex items-center justify-center text-lg">
+                <i class="fa-solid fa-user-doctor"></i>
+            </div>
+            <p class="text-gray-400 text-xs font-bold uppercase tracking-wider mt-4">Médicos Activos</p>
+            <h3 class="text-3xl font-black text-gray-800 mt-1">{{ $totalMedicos }}</h3>
+        </div>
 
-        </section>
-    </main>
+        <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm">
+            <div class="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg">
+                <i class="fa-solid fa-stethoscope"></i>
+            </div>
+            <p class="text-gray-400 text-xs font-bold uppercase tracking-wider mt-4">Especialidades</p>
+            <h3 class="text-3xl font-black text-gray-800 mt-1">{{ $totalEspecialidades }}</h3>
+        </div>
 
-</body>
+        <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm">
+            <div class="w-11 h-11 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-lg">
+                <i class="fa-solid fa-users"></i>
+            </div>
+            <p class="text-gray-400 text-xs font-bold uppercase tracking-wider mt-4">Total Usuarios</p>
+            <h3 class="text-3xl font-black text-gray-800 mt-1">{{ $totalUsuarios }}</h3>
+        </div>
 
-</html>
+    </div>
+
+    <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+        <h2 class="text-base font-bold text-gray-800 mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-bolt text-amber-500"></i>Accesos rápidos
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+            <a href="{{ route('admin.medicos.index') }}"
+                class="group p-4 rounded-xl bg-gray-50 border border-gray-100 hover:border-cyan-300 hover:bg-cyan-50/50 transition duration-200 block">
+                <div class="w-9 h-9 rounded-lg bg-cyan-100 text-cyan-700 flex items-center justify-center mb-3">
+                    <i class="fa-solid fa-user-doctor text-sm"></i>
+                </div>
+                <h4 class="font-bold text-gray-800 text-sm group-hover:text-cyan-700 transition">Gestión de Personal</h4>
+                <p class="text-xs text-gray-500 mt-1">Alta, baja y modificación de médicos.</p>
+            </a>
+
+            <a href="{{ route('admin.especialidades.index') }}"
+                class="group p-4 rounded-xl bg-gray-50 border border-gray-100 hover:border-cyan-300 hover:bg-cyan-50/50 transition duration-200 block">
+                <div class="w-9 h-9 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center mb-3">
+                    <i class="fa-solid fa-stethoscope text-sm"></i>
+                </div>
+                <h4 class="font-bold text-gray-800 text-sm group-hover:text-cyan-700 transition">Especialidades</h4>
+                <p class="text-xs text-gray-500 mt-1">Configura ramas de atención.</p>
+            </a>
+
+            <a href="{{ route('admin.usuarios.index') }}"
+                class="group p-4 rounded-xl bg-gray-50 border border-gray-100 hover:border-cyan-300 hover:bg-cyan-50/50 transition duration-200 block">
+                <div class="w-9 h-9 rounded-lg bg-purple-100 text-purple-700 flex items-center justify-center mb-3">
+                    <i class="fa-solid fa-users text-sm"></i>
+                </div>
+                <h4 class="font-bold text-gray-800 text-sm group-hover:text-cyan-700 transition">Auditoría de Cuentas</h4>
+                <p class="text-xs text-gray-500 mt-1">Supervisión de accesos de usuarios.</p>
+            </a>
+
+        </div>
+    </div>
+
+</div>
+@endsection

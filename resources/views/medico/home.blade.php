@@ -1,80 +1,54 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Panel Médico - Clínica D.S.</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
+@extends('layouts.dashboard')
 
-<body class="bg-slate-50 text-slate-900">
+@section('titulo', 'Inicio')
+@section('header', 'Panel de Control')
 
-    <main class="mx-auto max-w-5xl px-4 py-8">
-        <section class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+@section('content')
+<div class="space-y-6">
 
-            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <div>
-                    <h1 class="text-3xl font-bold text-slate-950">
-                        Panel del médico
-                    </h1>
-
-                    <p class="mt-3 text-slate-600">
-                        Bienvenido médico. Desde aquí puedes gestionar tus horarios,
-                        revisar tus citas y visualizar tu perfil profesional.
-                    </p>
-                </div>
-
-                <div class="rounded-2xl bg-cyan-50 px-5 py-4 text-cyan-700 ring-1 ring-cyan-100">
-                    <p class="text-sm font-semibold">Usuario médico</p>
-                    <p class="text-sm">{{ Auth::user()->email }}</p>
-                </div>
+    <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-cyan-600 via-cyan-500 to-teal-500 p-8 shadow-sm">
+        <div class="absolute -top-12 -right-12 w-56 h-56 bg-white/10 rounded-full blur-3xl"></div>
+        <div class="absolute -bottom-16 -left-10 w-48 h-48 bg-white/10 rounded-full blur-3xl"></div>
+        <div class="relative flex items-center justify-between">
+            <div>
+                <p class="text-cyan-50/80 text-sm font-medium tracking-wide uppercase">Panel médico</p>
+                <h1 class="text-3xl font-bold text-white mt-1">Bienvenido, Dr. {{ Auth::user()->name }}</h1>
+                <p class="text-cyan-50/90 mt-2 max-w-lg">Mantén el control de tus atenciones del día y solicitudes pendientes.</p>
             </div>
-
-            <div class="mt-8 grid gap-4 md:grid-cols-3">
-
-                <a href="{{ route('medico.horarios.index') }}"
-                   class="block rounded-2xl bg-slate-50 p-5 ring-1 ring-slate-200 transition hover:-translate-y-1 hover:bg-cyan-50 hover:shadow-md">
-                    <div class="mb-3 text-3xl">📅</div>
-                    <h2 class="font-bold text-slate-950">
-                        Mis horarios
-                    </h2>
-                    <p class="mt-2 text-sm leading-6 text-slate-600">
-                        Gestiona tus días, horas disponibles y consultorio.
-                    </p>
-                </a>
-
-                <a href="{{ route('medico.citas.index') }}"
-                   class="block rounded-2xl bg-slate-50 p-5 ring-1 ring-slate-200 transition hover:-translate-y-1 hover:bg-cyan-50 hover:shadow-md">
-                    <div class="mb-3 text-3xl">🩺</div>
-                    <h2 class="font-bold text-slate-950">
-                        Mis citas
-                    </h2>
-                    <p class="mt-2 text-sm leading-6 text-slate-600">
-                        Revisa las citas programadas por tus pacientes.
-                    </p>
-                </a>
-
-                <a href="{{ route('medico.perfil') }}"
-                   class="block rounded-2xl bg-slate-50 p-5 ring-1 ring-slate-200 transition hover:-translate-y-1 hover:bg-cyan-50 hover:shadow-md">
-                    <div class="mb-3 text-3xl">👨‍⚕️</div>
-                    <h2 class="font-bold text-slate-950">
-                        Mi perfil
-                    </h2>
-                    <p class="mt-2 text-sm leading-6 text-slate-600">
-                        Visualiza y actualiza tu información profesional.
-                    </p>
-                </a>
-
+            <div class="hidden md:flex w-20 h-20 rounded-2xl bg-white/15 backdrop-blur-sm items-center justify-center text-4xl text-white flex-shrink-0">
+                <i class="fa-solid fa-user-doctor"></i>
             </div>
+        </div>
+    </div>
 
-            <form action="{{ route('logout') }}" method="POST" class="mt-8">
-                @csrf
-                <button class="rounded-2xl bg-red-600 px-5 py-3 font-semibold text-white hover:bg-red-700">
-                    Cerrar sesión
-                </button>
-            </form>
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
 
-        </section>
-    </main>
+        <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm">
+            <div class="w-11 h-11 rounded-xl bg-cyan-50 text-cyan-600 flex items-center justify-center text-lg">
+                <i class="fa-solid fa-calendar-day"></i>
+            </div>
+            <p class="text-gray-400 text-xs font-bold uppercase tracking-wider mt-4">Citas para Hoy</p>
+            <h3 class="text-3xl font-black text-gray-800 mt-1">{{ $citasHoy }}</h3>
+        </div>
 
-</body>
-</html>
+        <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm">
+            <div class="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg">
+                <i class="fa-solid fa-calendar-check"></i>
+            </div>
+            <p class="text-gray-400 text-xs font-bold uppercase tracking-wider mt-4">Citas Reservadas</p>
+            <h3 class="text-3xl font-black text-gray-800 mt-1">{{ $citasTotal }}</h3>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm">
+            <div class="w-11 h-11 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-lg">
+                <i class="fa-solid fa-hourglass-half"></i>
+            </div>
+            <p class="text-gray-400 text-xs font-bold uppercase tracking-wider mt-4">Mis Horarios</p>
+            <h3 class="text-3xl font-black text-gray-800 mt-1">
+                {{ \App\Models\Horario::where('medico_id', \App\Models\Medico::where('user_id', Auth::id())->value('id'))->where('estado','disponible')->count() }}
+            </h3>
+        </div>
+
+    </div>
+</div>
+@endsection

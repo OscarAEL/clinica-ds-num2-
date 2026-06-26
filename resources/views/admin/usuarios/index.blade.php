@@ -1,109 +1,79 @@
-<!DOCTYPE html>
-<html lang="es">
+@extends('layouts.dashboard')
 
-<head>
-    <meta charset="UTF-8">
-    <title>Gestión de Usuarios - Clínica D.S.</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
+@section('titulo', 'Usuarios')
+@section('header', 'Gestión de Usuarios y Perfiles')
 
-<body class="bg-slate-50 text-slate-900">
+@section('content')
+<div class="space-y-5">
 
-    <main class="mx-auto max-w-7xl px-4 py-8">
-        <section class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+    <p class="text-sm text-gray-500">Supervisa las cuentas registradas y administra sus tipos de perfil.</p>
 
-            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <div>
-                    <p class="text-sm font-semibold text-cyan-700">Panel administrador</p>
-                    <h1 class="mt-1 text-3xl font-bold text-slate-950">
-                        Gestión de usuarios y perfiles
-                    </h1>
-                    <p class="mt-2 text-slate-600">
-                        Supervisa las cuentas de usuarios registradas en el sistema y administra sus tipos de perfil.
-                    </p>
-                </div>
+    @if(session('success'))
+    <div class="bg-emerald-50 border border-emerald-200 text-emerald-700 px-5 py-4 rounded-xl text-sm font-medium">
+        <i class="fa-solid fa-circle-check mr-2"></i>{{ session('success') }}
+    </div>
+    @endif
 
-                <div class="flex flex-col gap-2 sm:flex-row">
-                    <a href="{{ route('admin.home') }}"
-                        class="rounded-2xl bg-slate-100 px-5 py-3 text-center font-semibold text-slate-800 hover:bg-slate-200">
-                        Volver al panel
-                    </a>
-                </div>
-            </div>
-
-            @if (session('success'))
-            <div class="mt-6 rounded-2xl bg-emerald-50 p-4 text-sm font-semibold text-emerald-700 ring-1 ring-emerald-100">
-                {{ session('success') }}
-            </div>
-            @endif
-
-            <div class="mt-8 overflow-hidden rounded-2xl ring-1 ring-slate-200">
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-slate-200">
-                        <thead class="bg-slate-100">
-                            <tr>
-                                <th class="px-4 py-3 text-left text-sm font-bold text-slate-700">Nombre de Usuario</th>
-                                <th class="px-4 py-3 text-left text-sm font-bold text-slate-700">Correo Electrónico</th>
-                                <th class="px-4 py-3 text-left text-sm font-bold text-slate-700">Tipo de Usuario (Perfil)</th>
-                                <th class="px-4 py-3 text-right text-sm font-bold text-slate-700">Acciones</th>
-                            </tr>
-                        </thead>
-
-                        <tbody class="divide-y divide-slate-200 bg-white">
-                            @forelse ($usuarios as $usuario)
-                            <tr>
-                                <td class="px-4 py-4 font-semibold text-slate-950">
-                                    {{ $usuario->name }}
-                                </td>
-
-                                <td class="px-4 py-4 text-sm text-slate-600">
-                                    {{ $usuario->email }}
-                                </td>
-
-                                <td class="px-4 py-4">
-                                    @if ($usuario->tipo_usuario === 'administrador')
-                                    <span class="rounded-full bg-cyan-50 px-3 py-1 text-xs font-semibold text-cyan-700 uppercase">
-                                        {{ $usuario->tipo_usuario }}
-                                    </span>
-                                    @elseif ($usuario->tipo_usuario === 'medico')
-                                    <span class="rounded-full bg-purple-50 px-3 py-1 text-xs font-semibold text-purple-700 uppercase">
-                                        {{ $usuario->tipo_usuario }}
-                                    </span>
-                                    @else
-                                    <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700 uppercase">
-                                        {{ $usuario->tipo_usuario }}
-                                    </span>
-                                    @endif
-                                </td>
-
-                                <td class="px-4 py-4">
-                                    <div class="flex justify-end gap-2">
-                                        <a href="{{ route('admin.usuarios.edit', $usuario->id) }}"
-                                            class="rounded-xl bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-200">
-                                            Editar Perfil
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                            @empty
-                            <tr>
-                                <td colspan="4" class="px-4 py-10 text-center text-slate-500">
-                                    No hay usuarios registrados en la base de datos.
-                                </td>
-                            </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="mt-6 rounded-2xl bg-slate-100 p-4 text-sm text-slate-600 ring-1 ring-slate-200">
-                Sistema conectado a la base de datos persistente SQLite. Los cambios se guardan de forma segura.
-            </div>
-
-        </section>
-    </main>
-
-</body>
-
-</html>
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-5 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Usuario</th>
+                        <th class="px-5 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Correo</th>
+                        <th class="px-5 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Perfil</th>
+                        <th class="px-5 py-3 text-right text-xs font-bold text-gray-500 uppercase tracking-wider">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100 bg-white">
+                    @forelse($usuarios as $usuario)
+                    <tr class="hover:bg-gray-50 transition duration-150">
+                        <td class="px-5 py-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-9 h-9 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center font-bold text-sm flex-shrink-0">
+                                    {{ strtoupper(substr($usuario->name, 0, 1)) }}
+                                </div>
+                                <span class="font-semibold text-gray-900 text-sm">{{ $usuario->name }}</span>
+                            </div>
+                        </td>
+                        <td class="px-5 py-4 text-sm text-gray-500">
+                            {{ $usuario->email }}
+                        </td>
+                        <td class="px-5 py-4">
+                            @if($usuario->tipo_usuario === 'administrador')
+                            <span class="inline-flex items-center bg-cyan-50 text-cyan-700 text-xs font-semibold px-3 py-1 rounded-full uppercase">
+                                <i class="fa-solid fa-shield-halved mr-1.5 text-[10px]"></i>{{ $usuario->tipo_usuario }}
+                            </span>
+                            @elseif($usuario->tipo_usuario === 'medico')
+                            <span class="inline-flex items-center bg-purple-50 text-purple-700 text-xs font-semibold px-3 py-1 rounded-full uppercase">
+                                <i class="fa-solid fa-user-doctor mr-1.5 text-[10px]"></i>{{ $usuario->tipo_usuario }}
+                            </span>
+                            @else
+                            <span class="inline-flex items-center bg-gray-100 text-gray-600 text-xs font-semibold px-3 py-1 rounded-full uppercase">
+                                <i class="fa-solid fa-user mr-1.5 text-[10px]"></i>{{ $usuario->tipo_usuario }}
+                            </span>
+                            @endif
+                        </td>
+                        <td class="px-5 py-4 text-right">
+                            <a href="{{ route('admin.usuarios.edit', $usuario->id) }}"
+                                class="inline-flex items-center gap-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-semibold px-4 py-2 rounded-xl transition duration-150">
+                                <i class="fa-solid fa-pen-to-square text-xs"></i> Editar perfil
+                            </a>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="4" class="px-5 py-14 text-center">
+                            <div class="flex flex-col items-center gap-3 text-gray-400">
+                                <i class="fa-solid fa-users text-4xl"></i>
+                                <p class="text-sm font-medium">No hay usuarios registrados.</p>
+                            </div>
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+@endsection

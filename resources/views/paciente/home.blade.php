@@ -1,90 +1,74 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Panel Paciente - Clínica D.S.</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
+@extends('layouts.dashboard')
 
-<body class="bg-slate-50 text-slate-900">
+@section('titulo', 'Inicio')
+@section('header', 'Panel de Control')
 
-    <main class="mx-auto max-w-5xl px-4 py-8">
-        <section class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+@section('content')
+<div class="space-y-6">
 
-            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <div>
-                    <h1 class="text-3xl font-bold text-slate-950">
-                        Panel del paciente
-                    </h1>
+    <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-cyan-600 via-cyan-500 to-teal-500 p-8 shadow-sm">
+        <div class="absolute -top-12 -right-12 w-56 h-56 bg-white/10 rounded-full blur-3xl"></div>
+        <div class="absolute -bottom-16 -left-10 w-48 h-48 bg-white/10 rounded-full blur-3xl"></div>
 
-                    <p class="mt-3 text-slate-600">
-                        Bienvenido paciente. Desde aquí podrás consultar especialidades,
-                        revisar médicos disponibles y reservar citas.
-                    </p>
-                </div>
-
-                <div class="rounded-2xl bg-cyan-50 px-5 py-4 text-cyan-700 ring-1 ring-cyan-100">
-                    <p class="text-sm font-semibold">Usuario paciente</p>
-                    <p class="text-sm">{{ Auth::user()->email }}</p>
-                </div>
+        <div class="relative flex items-center justify-between">
+            <div>
+                <p class="text-cyan-50/80 text-sm font-medium tracking-wide uppercase">Panel paciente</p>
+                <h1 class="text-3xl font-bold text-white mt-1">¡Hola, {{ Auth::user()->name }}!</h1>
+                <p class="text-cyan-50/90 mt-2 max-w-lg">Bienvenido a tu portal de salud. Agenda tus citas en pasos sencillos.</p>
             </div>
-
-            <div class="mt-8 grid gap-4 md:grid-cols-3">
-
-                {{-- ESPECIALIDADES --}}
-                <a href="{{ route('paciente.especialidades.index') }}"
-                   class="block rounded-2xl bg-slate-50 p-5 ring-1 ring-slate-200 transition hover:-translate-y-1 hover:bg-cyan-50 hover:shadow-md">
-                    <div class="mb-3 text-3xl">🩺</div>
-
-                    <h2 class="font-bold text-slate-950">
-                        Especialidades
-                    </h2>
-
-                    <p class="mt-2 text-sm leading-6 text-slate-600">
-                        Consulta las especialidades disponibles en la clínica.
-                    </p>
-                </a>
-
-                {{-- MÉDICOS --}}
-                <a href="{{ route('paciente.medicos.index') }}"
-                   class="block rounded-2xl bg-slate-50 p-5 ring-1 ring-slate-200 transition hover:-translate-y-1 hover:bg-cyan-50 hover:shadow-md">
-                    <div class="mb-3 text-3xl">👨‍⚕️</div>
-
-                    <h2 class="font-bold text-slate-950">
-                        Médicos
-                    </h2>
-
-                    <p class="mt-2 text-sm leading-6 text-slate-600">
-                        Revisa la información de los médicos disponibles de la clínica.
-                    </p>
-                </a>
-
-                {{-- CITAS --}}
-                <a href="{{ route('paciente.citas.index') }}"
-                   class="block rounded-2xl bg-slate-50 p-5 ring-1 ring-slate-200 transition hover:-translate-y-1 hover:bg-cyan-50 hover:shadow-md">
-                    <div class="mb-3 text-3xl">📅</div>
-
-                    <h2 class="font-bold text-slate-950">
-                        Citas
-                    </h2>
-
-                    <p class="mt-2 text-sm leading-6 text-slate-600">
-                        Revisa horarios disponibles y reserva tu cita.
-                    </p>
-                </a>
-
+            <div class="hidden md:flex w-20 h-20 rounded-2xl bg-white/15 backdrop-blur-sm items-center justify-center text-4xl text-white flex-shrink-0">
+                <i class="fa-solid fa-heart-pulse"></i>
             </div>
+        </div>
+    </div>
 
-            <form action="{{ route('logout') }}" method="POST" class="mt-8">
-                @csrf
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 
-                <button class="rounded-2xl bg-red-600 px-5 py-3 font-semibold text-white hover:bg-red-700">
-                    Cerrar sesión
-                </button>
-            </form>
+        {{-- Próxima cita: conectada a datos reales --}}
+        <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-start gap-4">
+            <div class="w-11 h-11 rounded-xl bg-cyan-50 text-cyan-600 flex items-center justify-center text-lg flex-shrink-0">
+                <i class="fa-solid fa-calendar-check"></i>
+            </div>
+            <div>
+                <h4 class="font-bold text-gray-800 text-sm">Próxima cita médica</h4>
+                @if($proximaCita)
+                <p class="text-xs text-cyan-700 font-semibold mt-1">
+                    Dr. {{ $proximaCita->horario->medico->nombres }}
+                    {{ $proximaCita->horario->medico->apellidos }}
+                </p>
+                <p class="text-xs text-gray-500 mt-0.5">
+                    {{ \Carbon\Carbon::parse($proximaCita->fecha)->locale('es')->isoFormat('dddd D [de] MMMM') }}
+                    · {{ substr($proximaCita->horario->hora_inicio, 0, 5) }}
+                </p>
+                @else
+                <p class="text-xs text-gray-500 mt-1">No tienes citas próximas confirmadas.</p>
+                @endif
+            </div>
+        </div>
 
-        </section>
-    </main>
+        {{-- Historial --}}
+        <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-start gap-4">
+            <div class="w-11 h-11 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-lg flex-shrink-0">
+                <i class="fa-solid fa-laptop-medical"></i>
+            </div>
+            <div>
+                <h4 class="font-bold text-gray-800 text-sm">Historial rápido</h4>
+                <p class="text-xs text-gray-500 mt-1">Revisa tus consultas anteriores en el menú lateral.</p>
+            </div>
+        </div>
 
-</body>
-</html>
+        {{-- CTA Reservar --}}
+        <a href="{{ route('paciente.citas.index') }}"
+            class="bg-cyan-700 hover:bg-cyan-600 transition duration-200 p-6 rounded-2xl shadow-sm flex items-start gap-4 text-white">
+            <div class="w-11 h-11 rounded-xl bg-white/15 flex items-center justify-center text-lg flex-shrink-0">
+                <i class="fa-solid fa-plus"></i>
+            </div>
+            <div>
+                <h4 class="font-bold text-sm">Reservar nueva cita</h4>
+                <p class="text-xs text-cyan-50/90 mt-1">Inicia tu solicitud por pasos guiados.</p>
+            </div>
+        </a>
+
+    </div>
+</div>
+@endsection

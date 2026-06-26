@@ -1,69 +1,39 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Especialidades - Clínica D.S.</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
+@extends('layouts.dashboard')
 
-<body class="bg-slate-50 text-slate-900">
+@section('titulo', 'Especialidades')
+@section('header', 'Especialidades Disponibles')
 
-<main class="mx-auto max-w-7xl px-4 py-8">
-    <section class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+@section('content')
+<div class="space-y-5">
 
-        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-                <p class="text-sm font-semibold text-cyan-700">Panel paciente</p>
-                <h1 class="mt-1 text-3xl font-bold text-slate-950">
-                    Especialidades disponibles
-                </h1>
-                <p class="mt-2 text-slate-600">
-                    Conoce las especialidades médicas disponibles en Clínica D.S.
-                </p>
-            </div>
+    <p class="text-sm text-gray-500">Conoce las especialidades médicas disponibles en Clínica DS.</p>
 
-            <a href="{{ route('paciente.home') }}"
-               class="rounded-2xl bg-slate-100 px-5 py-3 text-center font-semibold text-slate-800 hover:bg-slate-200">
-                Volver
-            </a>
-        </div>
-
-        <div class="mt-8 grid gap-5 md:grid-cols-2">
-            @forelse ($especialidades as $especialidad)
-                <article class="rounded-3xl bg-slate-50 p-6 ring-1 ring-slate-200 transition hover:-translate-y-1 hover:bg-cyan-50 hover:shadow-md">
-                    <div class="flex items-start gap-4">
-                        <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-100 text-3xl">
-                            🩺
-                        </div>
-
-                        <div>
-                            <h2 class="text-xl font-bold text-slate-950">
-                                {{ $especialidad->nombre }}
-                            </h2>
-
-                            <span class="mt-2 inline-flex rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
-                                Disponible
-                            </span>
-                        </div>
-                    </div>
-
-                    <div class="mt-5 space-y-3 text-sm leading-6 text-slate-700">
-                        <p>
-                            <span class="font-bold text-slate-900">Información:</span>
-                            {{ $especialidad->descripcion }}
-                        </p>
-
-                    </div>
-                </article>
-            @empty
-                <div class="rounded-3xl bg-slate-50 p-6 text-slate-600 ring-1 ring-slate-200">
-                    No hay especialidades disponibles por el momento.
+    <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+        @forelse($especialidades as $especialidad)
+        <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 hover:border-cyan-400 hover:shadow-md transition duration-200">
+            <div class="flex items-center gap-4 mb-3">
+                <div class="w-11 h-11 rounded-xl bg-cyan-100 text-cyan-700 flex items-center justify-center flex-shrink-0">
+                    <i class="fa-solid fa-stethoscope text-lg"></i>
                 </div>
-            @endforelse
+                <div>
+                    <h3 class="font-bold text-gray-900 text-sm">{{ $especialidad->nombre }}</h3>
+                    <span class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-700 text-xs font-semibold px-2 py-0.5 rounded-full mt-1">
+                        <i class="fa-solid fa-circle text-[7px]"></i> Disponible
+                    </span>
+                </div>
+            </div>
+            @if($especialidad->descripcion)
+            <p class="text-sm text-gray-500 leading-relaxed">{{ $especialidad->descripcion }}</p>
+            @endif
         </div>
-
-    </section>
-</main>
-
-</body>
-</html>
+        @empty
+        <div class="md:col-span-2 lg:col-span-3 py-14 text-center">
+            <div class="flex flex-col items-center gap-3 text-gray-400">
+                <i class="fa-solid fa-stethoscope text-4xl"></i>
+                <p class="text-sm font-medium">No hay especialidades disponibles por el momento.</p>
+            </div>
+        </div>
+        @endforelse
+    </div>
+</div>
+@endsection

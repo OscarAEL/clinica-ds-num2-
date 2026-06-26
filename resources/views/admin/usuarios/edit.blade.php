@@ -1,79 +1,78 @@
-<!DOCTYPE html>
-<html lang="es">
+@extends('layouts.dashboard')
 
-<head>
-    <meta charset="UTF-8">
-    <title>Editar Perfil de Usuario - Clínica D.S.</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
+@section('titulo', 'Editar Perfil')
+@section('header', 'Modificar Rol de Usuario')
 
-<body class="bg-slate-50 text-slate-900">
+@section('content')
+<div class="max-w-2xl mx-auto space-y-5">
 
-    <main class="mx-auto max-w-3xl px-4 py-8">
-        <section class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+    @if($errors->any())
+    <div class="bg-red-50 border border-red-200 text-red-700 px-5 py-4 rounded-xl text-sm">
+        @foreach($errors->all() as $error)
+        <p><i class="fa-solid fa-triangle-exclamation mr-2"></i>{{ $error }}</p>
+        @endforeach
+    </div>
+    @endif
 
-            <div class="mb-6">
-                <p class="text-sm font-semibold text-cyan-700">Panel administrador</p>
-                <h1 class="mt-1 text-3xl font-bold text-slate-950">
-                    Modificar rol de usuario
-                </h1>
-                <p class="mt-2 text-slate-600">
-                    Cambia los privilegios o el perfil asignado al usuario actual.
-                </p>
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+
+        <div class="bg-cyan-700 px-6 py-4 flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full bg-cyan-600 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+                {{ strtoupper(substr($usuario->name, 0, 1)) }}
+            </div>
+            <div>
+                <p class="text-white font-semibold">{{ $usuario->name }}</p>
+                <p class="text-cyan-200 text-xs">{{ $usuario->email }}</p>
+            </div>
+        </div>
+
+        <form action="{{ route('admin.usuarios.update', $usuario->id) }}" method="POST" class="p-6 space-y-5">
+            @csrf
+            @method('PUT')
+
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Nombre completo</label>
+                <input type="text" value="{{ $usuario->name }}" disabled
+                    class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm bg-gray-50 text-gray-400 cursor-not-allowed">
             </div>
 
-            @if ($errors->any())
-            <div class="mb-6 rounded-2xl bg-red-50 p-4 text-sm text-red-700 ring-1 ring-red-100">
-                @foreach ($errors->all() as $error)
-                <p>• {{ $error }}</p>
-                @endforeach
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Correo electrónico</label>
+                <input type="email" value="{{ $usuario->email }}" disabled
+                    class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm bg-gray-50 text-gray-400 cursor-not-allowed">
             </div>
-            @endif
 
-            <form action="{{ route('admin.usuarios.update', $usuario->id) }}" method="POST" class="space-y-4">
-                @csrf
-                @method('PUT')
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Tipo de usuario (Perfil)</label>
+                <select name="tipo_usuario" required
+                    class="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-100">
+                    <option value="paciente" {{ old('tipo_usuario', $usuario->tipo_usuario) === 'paciente' ? 'selected' : '' }}>
+                        Paciente
+                    </option>
+                    <option value="medico" {{ old('tipo_usuario', $usuario->tipo_usuario) === 'medico' ? 'selected' : '' }}>
+                        Médico
+                    </option>
+                    <option value="administrador" {{ old('tipo_usuario', $usuario->tipo_usuario) === 'administrador' ? 'selected' : '' }}>
+                        Administrador
+                    </option>
+                </select>
+                @error('tipo_usuario')
+                <span class="text-red-600 text-xs mt-1 block">{{ $message }}</span>
+                @enderror
+            </div>
 
-                <div>
-                    <label class="mb-1 block text-sm font-semibold text-slate-700">Nombre completo</label>
-                    <input type="text" value="{{ $usuario->name }}" disabled
-                        class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-500 outline-none cursor-not-allowed">
-                </div>
+            <div class="flex gap-3 pt-2 border-t border-gray-100">
+                <button type="submit"
+                    class="bg-cyan-700 hover:bg-cyan-600 text-white font-semibold px-6 py-2.5 rounded-xl text-sm transition duration-200">
+                    <i class="fa-solid fa-floppy-disk mr-2"></i>Actualizar perfil
+                </button>
+                <a href="{{ route('admin.usuarios.index') }}"
+                    class="bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold px-6 py-2.5 rounded-xl text-sm transition duration-200">
+                    Cancelar
+                </a>
+            </div>
 
-                <div>
-                    <label class="mb-1 block text-sm font-semibold text-slate-700">Correo electrónico</label>
-                    <input type="email" value="{{ $usuario->email }}" disabled
-                        class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-500 outline-none cursor-not-allowed">
-                </div>
-
-                <div>
-                    <label class="mb-1 block text-sm font-semibold text-slate-700">Tipo de Usuario (Perfil)</label>
-                    <select name="tipo_usuario" required
-                        class="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none focus:border-cyan-600 focus:ring-4 focus:ring-cyan-100">
-                        <option value="paciente" {{ old('tipo_usuario', $usuario->tipo_usuario) === 'paciente' ? 'selected' : '' }}>Paciente</option>
-                        <option value="medico" {{ old('tipo_usuario', $usuario->tipo_usuario) === 'medico' ? 'selected' : '' }}>Médico</option>
-                        <option value="administrador" {{ old('tipo_usuario', $usuario->tipo_usuario) === 'administrador' ? 'selected' : '' }}>Administrador</option>
-                    </select>
-                    @error('tipo_usuario')
-                    <span class="mt-1 block text-sm font-semibold text-red-600">{{ $message }}</span>
-                    @enderror
-                </div>
-
-                <div class="flex flex-col gap-3 pt-4 sm:flex-row">
-                    <button class="rounded-2xl bg-cyan-600 px-6 py-3 font-semibold text-white hover:bg-cyan-700">
-                        Actualizar Perfil
-                    </button>
-
-                    <a href="{{ route('admin.usuarios.index') }}"
-                        class="rounded-2xl bg-slate-100 px-6 py-3 text-center font-semibold text-slate-800 hover:bg-slate-200">
-                        Cancelar
-                    </a>
-                </div>
-            </form>
-
-        </section>
-    </main>
-
-</body>
-
-</html>
+        </form>
+    </div>
+</div>
+@endsection

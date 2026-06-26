@@ -10,6 +10,9 @@ use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\PacienteCitaController;
 use App\Http\Controllers\PacienteMedicoController;
 use App\Http\Controllers\PacienteEspecialidadController;
+use App\Models\Medico;
+use App\Models\Especialidad;
+use App\Models\Cita;
 
 
 // 1. RUTAS PÚBLICAS Y DE AUTENTICACIÓN
@@ -30,7 +33,11 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::middleware(['auth', 'role:administrador'])->group(function () {
 
     Route::get('/admin/inicio', function () {
-        return view('admin.home');
+        return view('admin.home', [
+            'totalMedicos'        => \App\Models\Medico::where('estado', 'activo')->count(),
+            'totalEspecialidades' => \App\Models\Especialidad::where('estado', 'activo')->count(),
+            'totalUsuarios'       => \App\Models\User::count(),
+        ]);
     })->name('admin.home');
 
     // Mantenimiento de Médicos 
@@ -74,6 +81,9 @@ Route::middleware(['auth', 'role:medico'])->group(function () {
     // Gestión de citas del médico (Solo ver los turnos reservados)
     Route::get('/medico/citas', [MedicoPanelController::class, 'citas'])->name('medico.citas.index');
 
+    Route::patch('/medico/citas/{cita}/cancelar', [MedicoPanelController::class, 'cancelarCita'])->name('medico.citas.cancelar');
+    Route::patch('/medico/citas/{cita}/reprogramar', [MedicoPanelController::class, 'reprogramarCita'])->name('medico.citas.reprogramar');
+
     // Acciones de Horarios exclusivas para el médico (Crear, Editar, Eliminar)
     Route::get('/medico/horarios/create', [HorarioMedicoController::class, 'create'])->name('medico.horarios.create');
     Route::post('/medico/horarios', [HorarioMedicoController::class, 'store'])->name('medico.horarios.store');
@@ -89,10 +99,19 @@ Route::middleware(['auth', 'role:medico'])->group(function () {
 Route::middleware(['auth', 'role:paciente'])->group(function () {
 
     Route::get('/paciente/inicio', function () {
-        return view('paciente.home');
+        $proximaCita = \App\Models\Cita::with(['horario.medico.especialidad'])
+            ->where('paciente_id', auth()->id())
+            ->where('estado', 'reservada')
+            ->where('fecha', '>=', today())
+            ->orderBy('fecha', 'asc')
+            ->first();
+
+        return view('paciente.home', compact('proximaCita'));
     })->name('paciente.home');
 
     Route::get('/paciente/citas', [PacienteCitaController::class, 'index'])->name('paciente.citas.index');
+    Route::post('/paciente/citas', [PacienteCitaController::class, 'store'])->name('paciente.citas.store');
+    Route::get('/paciente/mis-citas', [PacienteCitaController::class, 'misCitas'])->name('paciente.mis-citas.index');
     Route::post('/paciente/citas/{disponibilidad}/reservar', [PacienteCitaController::class, 'reservar'])->name('paciente.citas.reservar');
 
     Route::get('/paciente/medicos', [PacienteMedicoController::class, 'index'])->name('paciente.medicos.index');
