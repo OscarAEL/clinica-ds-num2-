@@ -80,7 +80,7 @@ Route::middleware(['auth', 'role:medico'])->group(function () {
     Route::patch('/medico/citas/{cita}/cancelar', [MedicoPanelController::class, 'cancelarCita'])->name('medico.citas.cancelar');
     Route::patch('/medico/citas/{cita}/reprogramar', [MedicoPanelController::class, 'reprogramarCita'])->name('medico.citas.reprogramar');
 
-    // Acciones de Horarios exclusivas para el médico (Crear, Editar, Eliminar)
+    // Acciones de Horarios exclusivas para el médico (Crear y Editar)
     Route::get('/medico/horarios/create', [HorarioMedicoController::class, 'create'])->name('medico.horarios.create');
     Route::post('/medico/horarios', [HorarioMedicoController::class, 'store'])->name('medico.horarios.store');
     Route::get('/medico/horarios/{horario}/edit', [HorarioMedicoController::class, 'edit'])->name('medico.horarios.edit');
