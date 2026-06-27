@@ -96,7 +96,7 @@ Route::middleware(['auth', 'role:paciente'])->group(function () {
     Route::get('/paciente/inicio', function () {
         $proximaCita = \App\Models\Cita::with(['horario.medico.especialidad'])
             ->where('paciente_id', auth()->id())
-            ->where('estado', 'reservada')
+            ->whereIn('estado', ['reservada', 'reprogramada'])
             ->where('fecha', '>=', today())
             ->orderBy('fecha', 'asc')
             ->first();
