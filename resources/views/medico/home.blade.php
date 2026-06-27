@@ -45,7 +45,7 @@
             </div>
             <p class="text-gray-400 text-xs font-bold uppercase tracking-wider mt-4">Mis Horarios</p>
             <h3 class="text-3xl font-black text-gray-800 mt-1">
-                {{ \App\Models\Horario::where('medico_id', \App\Models\Medico::where('user_id', Auth::id())->value('id'))->where('estado','disponible')->count() }}
+                {{ $horariosDisponibles }}
             </h3>
         </div>
 

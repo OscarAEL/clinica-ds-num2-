@@ -26,8 +26,8 @@ class PacienteCitaController extends Controller
             ->where('estado', 'disponible')
             ->get();
 
-        // Fechas ya reservadas por horario para bloquearlas en el paso 4
-        $citasReservadas = Cita::where('estado', 'reservada')
+        // Fechas ya reservadas o reprogramadas por horario para bloquearlas en el paso 4
+        $citasReservadas = Cita::whereIn('estado', ['reservada', 'reprogramada'])
             ->get(['horario_id', 'fecha'])
             ->groupBy('horario_id')
             ->map(fn($group) => $group->pluck('fecha')->map(fn($f) => \Carbon\Carbon::parse($f)->toDateString())->toArray());

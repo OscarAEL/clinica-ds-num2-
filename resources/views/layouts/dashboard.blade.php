@@ -60,6 +60,12 @@
                         <i class="fa-solid fa-stethoscope w-8"></i> Especialidades
                     </a>
 
+                    <a href="{{ route('medico.horarios.index') }}"
+                        class="flex items-center p-3 rounded-lg hover:bg-cyan-600 transition duration-200
+                              {{ request()->routeIs('medico.horarios.*') ? 'bg-cyan-600 font-semibold' : '' }}">
+                        <i class="fa-solid fa-clock w-8"></i> Horarios
+                    </a>
+
                     {{-- ==============================
                      MENÚ: MÉDICO
                     ================================= --}}
@@ -78,7 +84,7 @@
                     <a href="{{ route('medico.citas.index') }}"
                         class="flex items-center p-3 rounded-lg hover:bg-cyan-600 transition duration-200
                               {{ request()->routeIs('medico.citas.*') ? 'bg-cyan-600 font-semibold' : '' }}">
-                        <i class="fa-solid fa-calendar-check w-8"></i> Citas Aprobadas
+                        <i class="fa-solid fa-calendar-check w-8"></i> Mis Citas
                     </a>
 
                     <p class="text-[10px] text-cyan-400 uppercase tracking-widest px-3 pt-3 pb-1">Disponibilidad</p>

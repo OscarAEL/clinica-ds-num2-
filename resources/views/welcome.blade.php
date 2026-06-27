@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Clínica D.S.</title>
 
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body class="bg-slate-50 text-slate-900">
@@ -34,12 +36,12 @@
 
                 <div class="flex items-center gap-2">
                     <a href="{{ route('login') }}"
-                       class="rounded-xl bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-800 transition hover:bg-slate-200">
+                        class="rounded-xl bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-800 transition hover:bg-slate-200">
                         Iniciar sesión
                     </a>
 
                     <a href="{{ route('registro') }}"
-                       class="rounded-xl bg-cyan-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-cyan-700">
+                        class="rounded-xl bg-cyan-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-cyan-700">
                         Registrarse
                     </a>
                 </div>
@@ -72,12 +74,12 @@
 
                         <div class="flex flex-col gap-3 sm:flex-row">
                             <a href="{{ route('login') }}"
-                               class="inline-flex items-center justify-center rounded-2xl bg-cyan-600 px-6 py-3 text-base font-semibold text-white shadow-sm transition hover:bg-cyan-700">
+                                class="inline-flex items-center justify-center rounded-2xl bg-cyan-600 px-6 py-3 text-base font-semibold text-white shadow-sm transition hover:bg-cyan-700">
                                 Iniciar sesión
                             </a>
 
                             <a href="{{ route('registro') }}"
-                               class="inline-flex items-center justify-center rounded-2xl bg-slate-100 px-6 py-3 text-base font-semibold text-slate-800 transition hover:bg-slate-200">
+                                class="inline-flex items-center justify-center rounded-2xl bg-slate-100 px-6 py-3 text-base font-semibold text-slate-800 transition hover:bg-slate-200">
                                 Registrarse
                             </a>
                         </div>
@@ -106,22 +108,21 @@
 
                         <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-cyan-100 via-white to-blue-100 p-4 ring-1 ring-slate-200">
                             @if (file_exists(public_path('images/home-clinica.jpg')))
-                                <img
-                                    src="{{ asset('images/home-clinica.jpg') }}"
-                                    alt="Personal médico atendiendo a un paciente en Clínica D.S."
-                                    class="h-72 w-full rounded-2xl object-cover sm:h-96"
-                                >
+                            <img
+                                src="{{ asset('images/home-clinica.jpg') }}"
+                                alt="Personal médico atendiendo a un paciente en Clínica D.S."
+                                class="h-72 w-full rounded-2xl object-cover sm:h-96">
                             @else
-                                <div class="flex h-72 w-full flex-col items-center justify-center rounded-2xl bg-white text-center sm:h-96">
-                                    <div class="mb-4 text-7xl">👩‍⚕️</div>
-                                    <p class="text-lg font-semibold text-slate-800">
-                                        Imagen principal de la clínica
-                                    </p>
-                                    <p class="mt-2 max-w-sm text-sm text-slate-500">
-                                        Guarda una imagen en:
-                                        <span class="font-semibold">public/images/home-clinica.jpg</span>
-                                    </p>
-                                </div>
+                            <div class="flex h-72 w-full flex-col items-center justify-center rounded-2xl bg-white text-center sm:h-96">
+                                <div class="mb-4 text-7xl">👩‍⚕️</div>
+                                <p class="text-lg font-semibold text-slate-800">
+                                    Imagen principal de la clínica
+                                </p>
+                                <p class="mt-2 max-w-sm text-sm text-slate-500">
+                                    Guarda una imagen en:
+                                    <span class="font-semibold">public/images/home-clinica.jpg</span>
+                                </p>
+                            </div>
                             @endif
 
                             <div class="mt-4 grid gap-3 sm:grid-cols-2">
@@ -189,4 +190,5 @@
     </main>
 
 </body>
+
 </html>

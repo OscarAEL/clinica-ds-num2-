@@ -32,7 +32,11 @@ class MedicoPanelController extends Controller
             ->where('estado', 'reservada')
             ->count();
 
-        return view('medico.home', compact('citasHoy', 'citasTotal'));
+        $horariosDisponibles = Horario::where('medico_id', $medico->id)
+            ->where('estado', 'disponible')
+            ->count();
+
+        return view('medico.home', compact('citasHoy', 'citasTotal', 'horariosDisponibles'));
     }
 
     public function perfil()
